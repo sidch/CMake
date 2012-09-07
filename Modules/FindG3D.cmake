@@ -10,7 +10,7 @@
 #
 # To specify an additional directory to search, set G3D_ROOT.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 
 # Look for the G3D header, first in the user-specified location and then in the system locations

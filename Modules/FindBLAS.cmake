@@ -5,7 +5,7 @@
 #
 # To specify an additional directory to search, set BLAS_ROOT.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 
 SET(BLAS_FOUND FALSE)

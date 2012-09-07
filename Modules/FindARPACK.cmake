@@ -8,7 +8,7 @@
 # TODO: Do we need to explicitly search for BLAS and LAPACK as well? The source distribution statically links these to
 # libarpack. Are there any installations that don't do this or the equivalent?
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 
 SET(ARPACK_FOUND FALSE)

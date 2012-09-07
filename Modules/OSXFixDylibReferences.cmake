@@ -10,7 +10,7 @@
 # in a non-standard location. Alternatively, set DYLD_LIBRARY_PATH to include these non-standard locations when running the
 # program (not recommended).
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009.
+# Author: Siddhartha Chaudhuri, 2009.
 #
 
 MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)

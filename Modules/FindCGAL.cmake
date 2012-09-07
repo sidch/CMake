@@ -21,7 +21,7 @@
 # To specify an additional directory to search, set CGAL_ROOT. To search for CGAL component libraries, add them to the list
 # CGAL_FIND_COMPONENTS.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 # Some Windows-specific extra paths were adapted from the PixelStruct project (http://da.vidr.cc/projects/pixelstruct), which in
 # turn copied from the pgRouting project (http://pgrouting.postlbs.org). While these projects are covered by the GPL, I would

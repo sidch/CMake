@@ -7,7 +7,7 @@
 # To specify an additional directory to search, set UMFPACK_ROOT.
 # To ignore looking for the headers (e.g. for ARPACK++, which has its own versions of the headers) set UMFPACK_LIBS_ONLY
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 
 SET(UMFPACK_FOUND FALSE)

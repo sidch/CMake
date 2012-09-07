@@ -7,7 +7,7 @@
 #
 # To specify an additional directory to search, set CLUTO_ROOT.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 
 # Look for the CLUTO header, first in the user-specified location and then in the system locations

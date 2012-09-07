@@ -6,7 +6,7 @@
 #
 # To specify an additional directory to search, set ARPACKPP_ROOT.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 
 SET(ARPACKPP_FOUND FALSE)
