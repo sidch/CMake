@@ -7,7 +7,7 @@
 #
 # To specify an additional directory to search, set ANN_ROOT.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2010
+# Author: Siddhartha Chaudhuri, 2010
 #
 
 # Look for the ANN header, first in the user-specified location and then in the system locations

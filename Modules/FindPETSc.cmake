@@ -11,7 +11,7 @@
 # TODO: Read library names and dependencies from installed config files instead, to better detect when BLAS, LAPACK, MPI etc.
 # are actually necessary and when they are not, and also to detect inter-component dependencies.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2008
+# Author: Siddhartha Chaudhuri, 2008
 #
 
 # Look for the PETSc header, first in the user-specified location and then in the system locations

@@ -8,7 +8,7 @@
 # To specify an additional directory to search, set IconsTango_ROOT. This should be the directory containing Tango/16x16 (or
 # tango/16x16).
 #
-# Copyright (C) Siddhartha Chaudhuri, 2010
+# Author: Siddhartha Chaudhuri, 2010
 #
 
 # Look for the 16x16 subdirectory, first in the user-specified location and then in the system locations

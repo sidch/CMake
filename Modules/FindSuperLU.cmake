@@ -7,7 +7,7 @@
 # To specify an additional directory to search, set SuperLU_ROOT.
 # To ignore looking for the headers (e.g. for ARPACK++, which has its own versions of the headers) set SuperLU_LIBS_ONLY
 #
-# Copyright (C) Siddhartha Chaudhuri, 2009
+# Author: Siddhartha Chaudhuri, 2009
 #
 
 SET(SuperLU_FOUND FALSE)

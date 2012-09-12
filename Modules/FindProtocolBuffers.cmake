@@ -7,7 +7,7 @@
 #
 # To specify an additional directory to search, set PROTOCOLBUFFERS_ROOT.
 #
-# Copyright (C) Ewen Cheslack-Postava, 2008
+# Author: Ewen Cheslack-Postava, 2008
 #
 
 # Look for the protocol buffers headers, first in the user-specified location and then in the system locations

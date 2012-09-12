@@ -6,7 +6,7 @@
 #
 # To specify an additional directory to search, set SLEPc_ROOT.
 #
-# Copyright (C) Siddhartha Chaudhuri, 2008
+# Author: Siddhartha Chaudhuri, 2008
 #
 
 # Look for the SLEPc header, first in the user-specified location and then in the system locations

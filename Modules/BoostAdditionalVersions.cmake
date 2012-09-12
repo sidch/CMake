@@ -2,7 +2,7 @@
 #
 # Additional versions of Boost, upto 1.99. Include this in your CMake files before calling FIND_PACKAGE(Boost).
 #
-# Copyright (C) Siddhartha Chaudhuri, 2010
+# Author: Siddhartha Chaudhuri, 2010
 #
 #===============================================================================================================================
 

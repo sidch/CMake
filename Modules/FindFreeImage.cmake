@@ -11,7 +11,7 @@
 # To specify an additional directory to search, set FreeImage_ROOT.
 # To search for the C++ wrapper FreeImagePlus instead, set FreeImage_LANGUAGE to "C++".
 #
-# Copyright (C) Siddhartha Chaudhuri, 2008
+# Author: Siddhartha Chaudhuri, 2008
 #
 
 IF(FreeImage_LANGUAGE MATCHES "[Cc][+][+]")
