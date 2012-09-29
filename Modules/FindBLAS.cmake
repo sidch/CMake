@@ -11,10 +11,10 @@
 SET(BLAS_FOUND FALSE)
 
 # First look in user-provided root directory, then look in system locations
-FIND_LIBRARY(BLAS_LIBRARIES NAMES lapack liblapack BLAS libBLAS PATHS "${BLAS_ROOT}" "${BLAS_ROOT}/lib"
+FIND_LIBRARY(BLAS_LIBRARIES NAMES blas BLAS libblas libBLAS lapack liblapack PATHS "${BLAS_ROOT}" "${BLAS_ROOT}/lib"
              NO_DEFAULT_PATH)
 IF(NOT BLAS_LIBRARIES)
-  FIND_LIBRARY(BLAS_LIBRARIES NAMES lapack liblapack BLAS libBLAS)
+  FIND_LIBRARY(BLAS_LIBRARIES NAMES blas BLAS libblas libBLAS lapack liblapack)
 ENDIF(NOT BLAS_LIBRARIES)
 
 IF(BLAS_LIBRARIES)
