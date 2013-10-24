@@ -88,23 +88,6 @@ ENDIF(Thea_INCLUDE_DIRS)
 
 IF(NOT Thea_NO_DEPENDENCIES)
 
-# Dependency: G3D
-IF(Thea_FOUND)
-  IF(EXISTS ${Thea_ROOT}/installed-g3d)
-    SET(G3D_ROOT ${Thea_ROOT}/installed-g3d)
-  ELSE()
-    SET(G3D_ROOT ${Thea_ROOT})
-  ENDIF()
-  FIND_PACKAGE(G3D)
-  IF(G3D_FOUND)
-    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${G3D_LIBRARIES})
-    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${G3D_INCLUDE_DIRS})
-  ELSE(G3D_FOUND)
-    MESSAGE(STATUS "Thea: G3D not found")
-    SET(Thea_FOUND FALSE)
-  ENDIF(G3D_FOUND)
-ENDIF(Thea_FOUND)
-
 # Dependency: Boost
 IF(Thea_FOUND)
   SET(Boost_USE_STATIC_LIBS      ON)
