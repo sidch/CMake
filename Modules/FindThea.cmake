@@ -99,7 +99,7 @@ IF(Thea_FOUND)
   ELSE(EXISTS ${Thea_ROOT}/installed-boost)
     SET(BOOST_ROOT ${Thea_ROOT})
   ENDIF(EXISTS ${Thea_ROOT}/installed-boost)
-  FIND_PACKAGE(Boost)
+  FIND_PACKAGE(Boost COMPONENTS filesystem thread system)
   IF(Boost_FOUND)
     SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
     # We'll add the libraries below, after CGAL, which depends on Boost
