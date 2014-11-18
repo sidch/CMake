@@ -22,9 +22,9 @@
 #
 
 SET(Thea_FOUND FALSE)
-SET(Thea_LIBRARY_DIRS )
-SET(Thea_CFLAGS )
-SET(Thea_LDFLAGS )
+UNSET(Thea_LIBRARY_DIRS )
+UNSET(Thea_CFLAGS )
+UNSET(Thea_LDFLAGS )
 
 # Look for the Thea header, first in the user-specified location and then in the system locations
 SET(Thea_INCLUDE_DOC "The directory containing the Thea include file Thea/Thea.hpp")
@@ -52,7 +52,7 @@ IF(Thea_INCLUDE_DIRS)
                PATH_SUFFIXES "" Release
                PATHS ${Thea_LIBRARY_DIRS} ${Thea_LIBRARY_DIRS}/lib ${Thea_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
-  SET(Thea_LIBRARIES)
+  UNSET(Thea_LIBRARIES)
   IF(Thea_DEBUG_LIBRARY AND Thea_RELEASE_LIBRARY)
     SET(Thea_LIBRARIES debug ${Thea_DEBUG_LIBRARY} optimized ${Thea_RELEASE_LIBRARY})
   ELSEIF(Thea_DEBUG_LIBRARY)
@@ -63,6 +63,17 @@ IF(Thea_INCLUDE_DIRS)
 
   IF(Thea_LIBRARIES)
     SET(Thea_FOUND TRUE)
+
+    # Update the library directories based on the actual library locations
+    UNSET(Thea_LIBRARY_DIRS)
+    IF(Thea_DEBUG_LIBRARY)
+      GET_FILENAME_COMPONENT(Thea_LIBDIR ${Thea_DEBUG_LIBRARY} PATH)
+      SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${Thea_LIBDIR})
+    ENDIF(Thea_DEBUG_LIBRARY)
+    IF(Thea_RELEASE_LIBRARY)
+      GET_FILENAME_COMPONENT(Thea_LIBDIR ${Thea_RELEASE_LIBRARY} PATH)
+      SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${Thea_LIBDIR})
+    ENDIF(Thea_RELEASE_LIBRARY)
 
     # Flags for importing symbols from dynamically linked libraries
     IF(WIN32)
