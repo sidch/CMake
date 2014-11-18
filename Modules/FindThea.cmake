@@ -252,9 +252,9 @@ IF(Thea_LDFLAGS)
   LIST(REMOVE_DUPLICATES Thea_LDFLAGS)
 ENDIF(Thea_LDFLAGS)
 
-SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} CACHE STRING "Additional directories for libraries required by Thea")
-SET(Thea_CFLAGS ${Thea_CFLAGS} CACHE STRING "Extra compiler flags required by Thea")
-SET(Thea_LDFLAGS ${Thea_LDFLAGS} CACHE STRING "Extra linker flags required by Thea")
+SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} CACHE STRING "Additional directories for libraries required by Thea" FORCE)
+SET(Thea_CFLAGS ${Thea_CFLAGS} CACHE STRING "Extra compiler flags required by Thea" FORCE)
+SET(Thea_LDFLAGS ${Thea_LDFLAGS} CACHE STRING "Extra linker flags required by Thea" FORCE)
 
 IF(Thea_FOUND)
   IF(NOT Thea_FIND_QUIETLY)
