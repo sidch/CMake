@@ -22,9 +22,9 @@
 #
 
 SET(Thea_FOUND FALSE)
-UNSET(Thea_LIBRARY_DIRS )
-UNSET(Thea_CFLAGS )
-UNSET(Thea_LDFLAGS )
+UNSET(Thea_LIBRARY_DIRS)
+UNSET(Thea_CFLAGS)
+UNSET(Thea_LDFLAGS)
 
 # Look for the Thea header, first in the user-specified location and then in the system locations
 SET(Thea_INCLUDE_DOC "The directory containing the Thea include file Thea/Thea.hpp")
