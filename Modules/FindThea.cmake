@@ -22,18 +22,12 @@
 #
 
 SET(Thea_FOUND FALSE)
-<<<<<<< HEAD
-SET(Thea_LIBRARY_DIRS )
-SET(Thea_CFLAGS )
-SET(Thea_LDFLAGS )
-=======
 UNSET(Thea_LIBRARY_DIRS)
 UNSET(Thea_LIBRARY_DIRS CACHE)
 UNSET(Thea_CFLAGS)
 UNSET(Thea_CFLAGS CACHE)
 UNSET(Thea_LDFLAGS)
 UNSET(Thea_LDFLAGS CACHE)
->>>>>>> cb98396... More tweaks
 
 # Look for the Thea header, first in the user-specified location and then in the system locations
 SET(Thea_INCLUDE_DOC "The directory containing the Thea include file Thea/Thea.hpp")
@@ -61,7 +55,7 @@ IF(Thea_INCLUDE_DIRS)
                PATH_SUFFIXES "" Release
                PATHS ${Thea_LIBRARY_DIRS} ${Thea_LIBRARY_DIRS}/lib ${Thea_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
-  SET(Thea_LIBRARIES)
+  UNSET(Thea_LIBRARIES)
   IF(Thea_DEBUG_LIBRARY AND Thea_RELEASE_LIBRARY)
     SET(Thea_LIBRARIES debug ${Thea_DEBUG_LIBRARY} optimized ${Thea_RELEASE_LIBRARY})
   ELSEIF(Thea_DEBUG_LIBRARY)
@@ -73,8 +67,6 @@ IF(Thea_INCLUDE_DIRS)
   IF(Thea_LIBRARIES)
     SET(Thea_FOUND TRUE)
 
-<<<<<<< HEAD
-=======
     # Update the library directories based on the actual library locations
     UNSET(Thea_LIBRARY_DIRS)
     UNSET(Thea_LIBRARY_DIRS CACHE)
@@ -87,7 +79,6 @@ IF(Thea_INCLUDE_DIRS)
       SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${Thea_LIBDIR})
     ENDIF(Thea_RELEASE_LIBRARY)
 
->>>>>>> cb98396... More tweaks
     # Flags for importing symbols from dynamically linked libraries
     IF(WIN32)
       # What's a good way of testing whether the .lib is static, or merely exports symbols from a DLL? For now, let's assume
@@ -265,9 +256,9 @@ IF(Thea_LDFLAGS)
   LIST(REMOVE_DUPLICATES Thea_LDFLAGS)
 ENDIF(Thea_LDFLAGS)
 
-SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} CACHE STRING "Additional directories for libraries required by Thea")
-SET(Thea_CFLAGS ${Thea_CFLAGS} CACHE STRING "Extra compiler flags required by Thea")
-SET(Thea_LDFLAGS ${Thea_LDFLAGS} CACHE STRING "Extra linker flags required by Thea")
+SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} CACHE STRING "Additional directories for libraries required by Thea" FORCE)
+SET(Thea_CFLAGS ${Thea_CFLAGS} CACHE STRING "Extra compiler flags required by Thea" FORCE)
+SET(Thea_LDFLAGS ${Thea_LDFLAGS} CACHE STRING "Extra linker flags required by Thea" FORCE)
 
 IF(Thea_FOUND)
   IF(NOT Thea_FIND_QUIETLY)
