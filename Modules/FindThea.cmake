@@ -22,9 +22,18 @@
 #
 
 SET(Thea_FOUND FALSE)
+<<<<<<< HEAD
 SET(Thea_LIBRARY_DIRS )
 SET(Thea_CFLAGS )
 SET(Thea_LDFLAGS )
+=======
+UNSET(Thea_LIBRARY_DIRS)
+UNSET(Thea_LIBRARY_DIRS CACHE)
+UNSET(Thea_CFLAGS)
+UNSET(Thea_CFLAGS CACHE)
+UNSET(Thea_LDFLAGS)
+UNSET(Thea_LDFLAGS CACHE)
+>>>>>>> cb98396... More tweaks
 
 # Look for the Thea header, first in the user-specified location and then in the system locations
 SET(Thea_INCLUDE_DOC "The directory containing the Thea include file Thea/Thea.hpp")
@@ -64,6 +73,21 @@ IF(Thea_INCLUDE_DIRS)
   IF(Thea_LIBRARIES)
     SET(Thea_FOUND TRUE)
 
+<<<<<<< HEAD
+=======
+    # Update the library directories based on the actual library locations
+    UNSET(Thea_LIBRARY_DIRS)
+    UNSET(Thea_LIBRARY_DIRS CACHE)
+    IF(Thea_DEBUG_LIBRARY)
+      GET_FILENAME_COMPONENT(Thea_LIBDIR ${Thea_DEBUG_LIBRARY} PATH)
+      SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${Thea_LIBDIR})
+    ENDIF(Thea_DEBUG_LIBRARY)
+    IF(Thea_RELEASE_LIBRARY)
+      GET_FILENAME_COMPONENT(Thea_LIBDIR ${Thea_RELEASE_LIBRARY} PATH)
+      SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${Thea_LIBDIR})
+    ENDIF(Thea_RELEASE_LIBRARY)
+
+>>>>>>> cb98396... More tweaks
     # Flags for importing symbols from dynamically linked libraries
     IF(WIN32)
       # What's a good way of testing whether the .lib is static, or merely exports symbols from a DLL? For now, let's assume
