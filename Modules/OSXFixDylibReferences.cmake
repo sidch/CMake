@@ -13,6 +13,21 @@
 # Author: Siddhartha Chaudhuri, 2009.
 #
 
+# See cmake --help-policy CMP0011 for details on this one
+IF(COMMAND CMAKE_POLICY)
+  CMAKE_POLICY(SET CMP0011 NEW)
+ENDIF(COMMAND CMAKE_POLICY)
+
+# See cmake --help-policy CMP0026 for details on this one
+IF(COMMAND CMAKE_POLICY)
+  CMAKE_POLICY(SET CMP0026 OLD)
+ENDIF(COMMAND CMAKE_POLICY)
+
+# See cmake --help-policy CMP0045 for details on this one
+IF(COMMAND CMAKE_POLICY)
+  CMAKE_POLICY(SET CMP0045 OLD)
+ENDIF(COMMAND CMAKE_POLICY)
+
 MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
 
   IF(APPLE)
