@@ -229,7 +229,7 @@ ENDIF(Thea_FOUND)
 # Platform libs
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET(Thea_LIBRARIES ${Thea_LIBRARIES} "-framework Carbon")
-ENDIIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CMAKE_DL_LIBS})  # for loading plugins with DynLib
 
