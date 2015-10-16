@@ -226,6 +226,8 @@ IF(Thea_FOUND)
   ENDIF(FreeImage_FOUND)
 ENDIF(Thea_FOUND)
 
+SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CMAKE_DL_LIBS})  # for loading plugins with DynLib
+
 ENDIF(NOT Thea_NO_DEPENDENCIES)
 
 # Remove duplicate entries from lists, else the same dirs and flags can repeat many times
