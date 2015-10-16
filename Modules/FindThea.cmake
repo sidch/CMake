@@ -226,6 +226,11 @@ IF(Thea_FOUND)
   ENDIF(FreeImage_FOUND)
 ENDIF(Thea_FOUND)
 
+# Platform libs
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  SET(Thea_LIBRARIES ${Thea_LIBRARIES} "-framework Carbon")
+ENDIIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
 SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CMAKE_DL_LIBS})  # for loading plugins with DynLib
 
 ENDIF(NOT Thea_NO_DEPENDENCIES)
