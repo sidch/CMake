@@ -51,7 +51,7 @@ SET(OSMesa_GLU_LDFLAGS "")
 #
 
 FIND_PATH(OSMesa_INCLUDE_DIR NAMES GL/osmesa.h PATHS ${OSMesa_DIR_SEARCH} DOC "The ${OSMesa_INCLUDE_PATH_DESCRIPTION}"
-	  NO_DEFAULT_PATH)
+          NO_DEFAULT_PATH)
 
 IF(NOT OSMesa_INCLUDE_DIR)  # now look in system locations
   FIND_PATH(OSMesa_INCLUDE_DIR NAMES GL/osmesa.h DOC "The ${OSMesa_INCLUDE_PATH_DESCRIPTION}")
@@ -100,29 +100,29 @@ IF(OSMesa_LIBRARY_DIRS)
       # First try to find the main library OSMesa
       PKG_CHECK_MODULES(OSMesa_PC_OSMesa osmesa)
       IF(OSMesa_PC_OSMesa_FOUND)
-	SET(PKG_CONFIG_FAILED FALSE)
+        SET(PKG_CONFIG_FAILED FALSE)
 
-	SET(OSMesa_LIBRARIES ${OSMesa_PC_OSMesa_LIBRARIES})
-	SET(OSMesa_LIBRARY_DIRS ${OSMesa_PC_OSMesa_LIBRARY_DIRS})
-	SET(OSMesa_INCLUDE_DIRS ${OSMesa_PC_OSMesa_INCLUDE_DIRS})
-	SET(OSMesa_LDFLAGS ${OSMesa_PC_OSMesa_LDFLAGS_OTHER})
-	SET(OSMesa_CFLAGS ${OSMesa_PC_OSMesa_CFLAGS_OTHER})
-	SET(OSMesa_GL_LIBRARIES )  # libGL is pulled in via pkg-config into OSMesa_LIBRARIES if it is required
+        SET(OSMesa_LIBRARIES ${OSMesa_PC_OSMesa_LIBRARIES})
+        SET(OSMesa_LIBRARY_DIRS ${OSMesa_PC_OSMesa_LIBRARY_DIRS})
+        SET(OSMesa_INCLUDE_DIRS ${OSMesa_PC_OSMesa_INCLUDE_DIRS})
+        SET(OSMesa_LDFLAGS ${OSMesa_PC_OSMesa_LDFLAGS_OTHER})
+        SET(OSMesa_CFLAGS ${OSMesa_PC_OSMesa_CFLAGS_OTHER})
+        SET(OSMesa_GL_LIBRARIES )  # libGL is pulled in via pkg-config into OSMesa_LIBRARIES if it is required
 
-	# Finally try to find libGLU
-	IF(EXISTS ${OSMesa_PC_DIR}/glu.pc)  # only a libGLU from the same installation is valid
-	  PKG_CHECK_MODULES(OSMesa_PC_GLU glu)
-	ENDIF(EXISTS ${OSMesa_PC_DIR}/glu.pc)
+        # Finally try to find libGLU
+        IF(EXISTS ${OSMesa_PC_DIR}/glu.pc)  # only a libGLU from the same installation is valid
+          PKG_CHECK_MODULES(OSMesa_PC_GLU glu)
+        ENDIF(EXISTS ${OSMesa_PC_DIR}/glu.pc)
 
-	IF(OSMesa_PC_GLU_FOUND)
-	  SET(OSMesa_GLU_LIBRARIES ${OSMesa_PC_GLU_LIBRARIES})
-	  SET(OSMesa_GLU_LIBRARY_DIRS ${OSMesa_PC_GLU_LIBRARY_DIRS})
-	  SET(OSMesa_GLU_INCLUDE_DIRS ${OSMesa_PC_GLU_INCLUDE_DIRS})
-	  SET(OSMesa_GLU_LDFLAGS ${OSMesa_PC_GLU_LDFLAGS_OTHER})
-	  SET(OSMesa_GLU_CFLAGS ${OSMesa_PC_GLU_CFLAGS_OTHER})
-	ELSE(OSMesa_PC_GLU_FOUND)
-	  SET(OSMesa_GLU_LIBRARIES )
-	ENDIF(OSMesa_PC_GLU_FOUND)
+        IF(OSMesa_PC_GLU_FOUND)
+          SET(OSMesa_GLU_LIBRARIES ${OSMesa_PC_GLU_LIBRARIES})
+          SET(OSMesa_GLU_LIBRARY_DIRS ${OSMesa_PC_GLU_LIBRARY_DIRS})
+          SET(OSMesa_GLU_INCLUDE_DIRS ${OSMesa_PC_GLU_INCLUDE_DIRS})
+          SET(OSMesa_GLU_LDFLAGS ${OSMesa_PC_GLU_LDFLAGS_OTHER})
+          SET(OSMesa_GLU_CFLAGS ${OSMesa_PC_GLU_CFLAGS_OTHER})
+        ELSE(OSMesa_PC_GLU_FOUND)
+          SET(OSMesa_GLU_LIBRARIES )
+        ENDIF(OSMesa_PC_GLU_FOUND)
 
       ENDIF(OSMesa_PC_OSMesa_FOUND)
     ENDIF(PKG_CONFIG_FOUND)
