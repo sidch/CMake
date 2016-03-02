@@ -40,9 +40,13 @@ MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
       GET_TARGET_PROPERTY(OFIN_${target}_Output ${target} LOCATION)
     ENDIF()
 
+    SET(OFIN_${target}_RPATHS )
+
     FOREACH(OFIN_${target}_Library ${libraries})
-      IF(${OFIN_${target}_Library} MATCHES ".*[.]dylib")
-        # Resolve symlinks and get absolute path
+      IF(${OFIN_${target}_Library} MATCHES "[.]dylib$"
+         OR ${OFIN_${target}_Library} MATCHES "[.]framework/.+")
+
+        # Resolve symlinks and get absolute location
         GET_FILENAME_COMPONENT(OFIN_${target}_LibraryAbsolute ${OFIN_${target}_Library} ABSOLUTE)
 
         # Get the baked install name of the library
@@ -53,24 +57,56 @@ MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
         SEPARATE_ARGUMENTS(OFIN_${target}_LibraryInstallNameOutput)
         LIST(GET OFIN_${target}_LibraryInstallNameOutput 1 OFIN_${target}_LibraryInstallName)
 
-        # Replace the filename with the install name
-        IF(${OFIN_${target}_LibraryInstallName} MATCHES ".*/.*")  # install name has path baked in
-          GET_FILENAME_COMPONENT(OFIN_${target}_LibraryAbsolute ${OFIN_${target}_LibraryInstallName} ABSOLUTE)
-        ELSE()  # install name is just unqualified filename
+        IF(${OFIN_${target}_LibraryInstallName} MATCHES "^[@]rpath")
+
+          # Ideally, we want to eliminate the longest common suffix of the install name and the absolute path. Whatever's left
+          # will be the desired rpath. But since this is difficult to do (especially if there are naming variations), we will
+          # just add the directory containing the library, and paths specified as library search prefixes
+
           GET_FILENAME_COMPONENT(OFIN_${target}_LibraryAbsolutePath ${OFIN_${target}_LibraryAbsolute} PATH)
-          SET(OFIN_${target}_LibraryAbsolute "${OFIN_${target}_LibraryAbsolutePath}/${OFIN_${target}_LibraryInstallName}")
+          SET(OFIN_${target}_RPATHS ${OFIN_${target}_RPATHS} "${OFIN_${target}_LibraryAbsolutePath}")
+
+          FOREACH(prefix ${CMAKE_PREFIX_PATH})
+            SET(OFIN_${target}_RPATHS ${OFIN_${target}_RPATHS} "${CMAKE_PREFIX_PATH}")
+            SET(OFIN_${target}_RPATHS ${OFIN_${target}_RPATHS} "${CMAKE_PREFIX_PATH}/lib")
+          ENDFOREACH()
+
+        ELSEIF(NOT ${OFIN_${target}_LibraryInstallName} MATCHES "^[@/]")  # just a relative path
+
+          # Replace the unqualified filename, if it appears, with the absolute location, either by directly changing the path or
+          # by editing the rpath
+
+          # -- handle the case when the actual filename is baked in
+          GET_FILENAME_COMPONENT(OFIN_${target}_LibraryFilename ${OFIN_${target}_LibraryAbsolute} NAME)
+          ADD_CUSTOM_COMMAND(TARGET ${target} POST_BUILD
+                             COMMAND install_name_tool
+                             ARGS -change
+                                  ${OFIN_${target}_LibraryFilename}
+                                  ${OFIN_${target}_LibraryAbsolute}
+                                  ${OFIN_${target}_Output})
+
+          # -- handle the case when the install name is baked in
+          ADD_CUSTOM_COMMAND(TARGET ${target} POST_BUILD
+                             COMMAND install_name_tool
+                             ARGS -change
+                                  ${OFIN_${target}_LibraryInstallName}
+                                  ${OFIN_${target}_LibraryAbsolute}
+                                  ${OFIN_${target}_Output})
         ENDIF()
 
-        # Replace the unqualified filename, if it appears, with the absolute location
-        GET_FILENAME_COMPONENT(OFIN_${target}_LibraryFilename ${OFIN_${target}_LibraryAbsolute} NAME)
-        ADD_CUSTOM_COMMAND(TARGET ${target} POST_BUILD
-                           COMMAND install_name_tool
-                           ARGS -change
-                                ${OFIN_${target}_LibraryFilename}
-                                ${OFIN_${target}_LibraryAbsolute}
-                                ${OFIN_${target}_Output})
       ENDIF()
     ENDFOREACH(OFIN_${target}_Library)
+
+    # Add the collected rpaths
+    IF(OFIN_${target}_RPATHS)
+      LIST(REMOVE_DUPLICATES OFIN_${target}_RPATHS)
+      FOREACH(rpath ${OFIN_${target}_RPATHS})
+        ADD_CUSTOM_COMMAND(TARGET ${target} POST_BUILD
+                           COMMAND install_name_tool
+                           ARGS -add_rpath "${rpath}"
+                           $<TARGET_FILE:${target}>)
+      ENDFOREACH()
+    ENDIF()
   ENDIF()
 
 ENDMACRO(OSX_FIX_DYLIB_REFERENCES)
