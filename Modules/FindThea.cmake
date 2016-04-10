@@ -124,7 +124,7 @@ IF(Thea_FOUND)
   ENDIF(Boost_FOUND)
 ENDIF(Thea_FOUND)
 
-# Dependency: CGAL
+# Dependency: CGAL [Optional]
 IF(Thea_FOUND)
   IF(EXISTS ${Thea_ROOT}/installed-cgal)
     SET(CGAL_ROOT ${Thea_ROOT}/installed-cgal)
@@ -149,7 +149,6 @@ IF(Thea_FOUND)
     SET(Thea_RELEASE_CFLAGS ${Thea_RELEASE_CFLAGS} ${CGAL_RELEASE_CFLAGS})
   ELSE(CGAL_FOUND)
     MESSAGE(STATUS "Thea: CGAL not found")
-    SET(Thea_FOUND FALSE)
   ENDIF(CGAL_FOUND)
 ENDIF(Thea_FOUND)
 
