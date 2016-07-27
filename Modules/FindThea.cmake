@@ -105,9 +105,9 @@ IF(NOT Thea_NO_DEPENDENCIES)
 
 # Dependency: Boost
 IF(Thea_FOUND)
-  SET(Boost_USE_STATIC_LIBS      ON)
   SET(Boost_USE_MULTITHREADED    ON)
-  SET(Boost_USE_STATIC_RUNTIME  OFF)
+  # SET(Boost_USE_STATIC_LIBS      ON)
+  # SET(Boost_USE_STATIC_RUNTIME  OFF)
   INCLUDE(BoostAdditionalVersions)
   IF(EXISTS ${Thea_ROOT}/installed-boost)
     SET(BOOST_ROOT ${Thea_ROOT}/installed-boost)
