@@ -57,15 +57,59 @@ MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
         SEPARATE_ARGUMENTS(OFIN_${target}_LibraryInstallNameOutput)
         LIST(GET OFIN_${target}_LibraryInstallNameOutput 1 OFIN_${target}_LibraryInstallName)
 
-        IF(${OFIN_${target}_LibraryInstallName} MATCHES "^[@]rpath")
+        IF(${OFIN_${target}_LibraryInstallName} MATCHES "^[@]rpath/")
 
           # Ideally, we want to eliminate the longest common suffix of the install name and the absolute path. Whatever's left
-          # will be the desired rpath. But since this is difficult to do (especially if there are naming variations), we will
-          # just add the directory containing the library, and paths specified as library search prefixes
+          # will be the desired rpath. But this is difficult to do (especially if there are naming variations, e.g.
+          # "Versions/Current" vs "Versions/5" is a common culprit). So we'll add various candidate rpaths and hope at least one
+          # is correct.
 
+          # Typically, the rpath to a library within a framework looks like this:
+          # @rpath/A.framework/Versions/5/libFoo.dylib
+          #
+          # Hence, we'll extract for the path unit immediately following the @rpath (in this case A.framework) and then look for
+          # it in the library's actual path. Everything before this location will be put in the rpath.
+          SET(OFIN_${target}_PathPrefix ${OFIN_${target}_LibraryInstallName})
+          SET(OFIN_${target}_RpathFirstChild )
+          WHILE(NOT OFIN_${target}_PathPrefix STREQUAL "@rpath")
+            GET_FILENAME_COMPONENT(OFIN_${target}_RpathFirstChild  ${OFIN_${target}_PathPrefix} NAME)
+            GET_FILENAME_COMPONENT(OFIN_${target}_PathPrefix       ${OFIN_${target}_PathPrefix} PATH)
+
+            IF(NOT OFIN_${target}_PathPrefix)  # should never happen but just in case
+              BREAK()
+            ENDIF(NOT OFIN_${target}_PathPrefix)
+
+            IF(OFIN_${target}_PathPrefix STREQUAL "/")  # should never happen but just in case
+              BREAK()
+            ENDIF(OFIN_${target}_PathPrefix STREQUAL "/")
+          ENDWHILE(NOT OFIN_${target}_PathPrefix STREQUAL "@rpath")
+
+          IF(OFIN_${target}_RpathFirstChild)
+            SET(OFIN_${target}_PathPrefix ${OFIN_${target}_LibraryAbsolute})
+            SET(OFIN_${target}_PathUnit )
+            WHILE(NOT OFIN_${target}_PathUnit STREQUAL ${OFIN_${target}_RpathFirstChild})
+              GET_FILENAME_COMPONENT(OFIN_${target}_PathUnit    ${OFIN_${target}_PathPrefix} NAME)
+              GET_FILENAME_COMPONENT(OFIN_${target}_PathPrefix  ${OFIN_${target}_PathPrefix} PATH)
+
+              IF(NOT OFIN_${target}_PathPrefix)
+                BREAK()
+              ENDIF(NOT OFIN_${target}_PathPrefix)
+
+              IF(OFIN_${target}_PathPrefix STREQUAL "/")
+                BREAK()
+              ENDIF(OFIN_${target}_PathPrefix STREQUAL "/")
+            ENDWHILE(NOT OFIN_${target}_PathUnit STREQUAL ${OFIN_${target}_RpathFirstChild})
+
+            IF(OFIN_${target}_PathPrefix)
+              SET(OFIN_${target}_RPATHS ${OFIN_${target}_RPATHS} "${OFIN_${target}_PathPrefix}")
+            ENDIF(OFIN_${target}_PathPrefix)
+          ENDIF(OFIN_${target}_RpathFirstChild)
+
+          # Add the directory containing the library
           GET_FILENAME_COMPONENT(OFIN_${target}_LibraryAbsolutePath ${OFIN_${target}_LibraryAbsolute} PATH)
           SET(OFIN_${target}_RPATHS ${OFIN_${target}_RPATHS} "${OFIN_${target}_LibraryAbsolutePath}")
 
+          # Add paths specified as library search prefixes
           FOREACH(prefix ${CMAKE_PREFIX_PATH})
             SET(OFIN_${target}_RPATHS ${OFIN_${target}_RPATHS} "${CMAKE_PREFIX_PATH}")
             SET(OFIN_${target}_RPATHS ${OFIN_${target}_RPATHS} "${CMAKE_PREFIX_PATH}/lib")
