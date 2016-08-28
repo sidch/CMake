@@ -144,11 +144,12 @@ MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
     # Add the collected rpaths
     IF(OFIN_${target}_RPATHS)
       LIST(REMOVE_DUPLICATES OFIN_${target}_RPATHS)
+
       FOREACH(rpath ${OFIN_${target}_RPATHS})
         ADD_CUSTOM_COMMAND(TARGET ${target} POST_BUILD
-                           COMMAND install_name_tool
-                           ARGS -add_rpath "${rpath}"
-                           $<TARGET_FILE:${target}>)
+                           COMMAND bash
+                           ARGS -c "install_name_tool -add_rpath '${rpath}' '$<TARGET_FILE:${target}>' > /dev/null 2>&1 || true"
+                           VERBATIM)
       ENDFOREACH()
     ENDIF()
   ENDIF()
