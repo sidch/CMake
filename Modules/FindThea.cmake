@@ -116,46 +116,12 @@ IF(Thea_FOUND)
   ENDIF(EXISTS ${Thea_ROOT}/installed-boost)
   FIND_PACKAGE(Boost COMPONENTS filesystem thread system)
   IF(Boost_FOUND)
+    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${Boost_LIBRARIES})
     SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-    # We'll add the libraries below, after CGAL, which depends on Boost
   ELSE(Boost_FOUND)
     MESSAGE(STATUS "Thea: Boost not found")
     SET(Thea_FOUND FALSE)
   ENDIF(Boost_FOUND)
-ENDIF(Thea_FOUND)
-
-# Dependency: CGAL [Optional]
-IF(Thea_FOUND)
-  IF(EXISTS ${Thea_ROOT}/installed-cgal)
-    SET(CGAL_ROOT ${Thea_ROOT}/installed-cgal)
-  ELSE(EXISTS ${Thea_ROOT}/installed-cgal)
-    SET(CGAL_ROOT ${Thea_ROOT})
-  ENDIF(EXISTS ${Thea_ROOT}/installed-cgal)
-  FIND_PACKAGE(CGAL)
-  IF(CGAL_FOUND)
-    SET(CGAL_INCLUDE_DIRS ${CGAL_INCLUDE_DIRS} ${CGAL_3RD_PARTY_INCLUDE_DIRS})
-    SET(CGAL_LIBRARIES ${CGAL_LIBRARY} ${CGAL_3RD_PARTY_LIBRARIES})
-    IF(NOT CGAL_LIBRARY)
-      MESSAGE(STATUS "CGAL libraries will be auto-linked")
-      SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${CGAL_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS})
-    ENDIF(NOT CGAL_LIBRARY)
-    # -O3 might cause problems with old versions of gcc 4 on OS X
-    LIST(REMOVE_ITEM CGAL_RELEASE_CFLAGS "-O3")
-
-    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CGAL_LIBRARIES})
-    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${CGAL_INCLUDE_DIRS})
-    SET(Thea_CFLAGS ${Thea_CFLAGS} ${CGAL_3RD_PARTY_DEFINITIONS})
-    SET(Thea_DEBUG_CFLAGS ${Thea_DEBUG_CFLAGS} ${CGAL_DEBUG_CFLAGS})
-    SET(Thea_RELEASE_CFLAGS ${Thea_RELEASE_CFLAGS} ${CGAL_RELEASE_CFLAGS})
-  ELSE(CGAL_FOUND)
-    MESSAGE(STATUS "Thea: CGAL not found")
-  ENDIF(CGAL_FOUND)
-ENDIF(Thea_FOUND)
-
-# CGAL depends on Boost but the block above also needs access to the Boost library dirs, so we add the libraries here, in the
-# correct sequence
-IF(Thea_FOUND)
-  SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${Boost_LIBRARIES})
 ENDIF(Thea_FOUND)
 
 # Dependency: Lib3ds
