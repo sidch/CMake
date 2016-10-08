@@ -24,7 +24,8 @@ IF(ARPACK_LIBRARIES)
   # On OS X we probably also need gfortran and LAPACK libraries
   IF(APPLE)
     FIND_LIBRARY(ARPACK_LAPACK_LIBRARY NAMES lapack LAPACK PATHS "${ARPACK_ROOT}" "${ARPACK_ROOT}/lib")
-    FIND_LIBRARY(ARPACK_GFORTRAN_LIBRARY NAMES gfortran PATHS "${ARPACK_ROOT}" "${ARPACK_ROOT}/lib")
+    FIND_LIBRARY(ARPACK_GFORTRAN_LIBRARY NAMES gfortran PATHS "${ARPACK_ROOT}" "${ARPACK_ROOT}/lib"
+                                                        PATH_SUFFIXES "" "gfortran/lib" "../gfortran/lib")
 
     IF(ARPACK_LAPACK_LIBRARY)
       SET(ARPACK_LIBRARIES ${ARPACK_LIBRARIES} ${ARPACK_LAPACK_LIBRARY})
