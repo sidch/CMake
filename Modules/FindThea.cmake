@@ -47,12 +47,12 @@ IF(Thea_INCLUDE_DIRS)
 
   FIND_LIBRARY(Thea_DEBUG_LIBRARY
                NAMES Thea_d Thead
-               PATH_SUFFIXES "" Debug
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
                PATHS ${Thea_LIBRARY_DIRS} ${Thea_LIBRARY_DIRS}/lib ${Thea_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
   FIND_LIBRARY(Thea_RELEASE_LIBRARY
                NAMES Thea
-               PATH_SUFFIXES "" Release
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
                PATHS ${Thea_LIBRARY_DIRS} ${Thea_LIBRARY_DIRS}/lib ${Thea_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
   UNSET(Thea_LIBRARIES)

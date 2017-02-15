@@ -33,9 +33,11 @@ IF(SirikataCore_INCLUDE_DIRS)
 
   # Find SirikataCore libraries
   FIND_LIBRARY(SirikataCore_DEBUG_LIBRARY   NAMES sirikata-core_d sirikata-cored libsirikata-core_d libsirikata-cored
-               PATH_SUFFIXES "" Debug   PATHS ${SirikataCore_LIBRARY_DIRS} NO_DEFAULT_PATH)
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
+               PATHS ${SirikataCore_LIBRARY_DIRS} NO_DEFAULT_PATH)
   FIND_LIBRARY(SirikataCore_RELEASE_LIBRARY NAMES sirikata-core libsirikata-core
-               PATH_SUFFIXES "" Release PATHS ${SirikataCore_LIBRARY_DIRS} NO_DEFAULT_PATH)
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
+               PATHS ${SirikataCore_LIBRARY_DIRS} NO_DEFAULT_PATH)
 
   SET(SirikataCore_LIBRARIES )
   IF(SirikataCore_DEBUG_LIBRARY AND SirikataCore_RELEASE_LIBRARY)

@@ -34,10 +34,12 @@ IF(CLAPACK_INCLUDE_DIRS)
   # Find LAPACK library
   FIND_LIBRARY(CLAPACK_DEBUG_LIBRARY
                NAMES clapackd lapackd liblapackd LAPACKd libLAPACKd
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
                PATHS  ${CLAPACK_LIBRARY_DIRS} NO_DEFAULT_PATH)
 
   FIND_LIBRARY(CLAPACK_RELEASE_LIBRARY
                NAMES clapack lapack liblapack LAPACK libLAPACK
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
                PATHS  ${CLAPACK_LIBRARY_DIRS} NO_DEFAULT_PATH)
 
   # If we didn't find the libs in the location adjacent to the header, so just look in the system paths

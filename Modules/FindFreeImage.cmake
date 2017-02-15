@@ -57,8 +57,13 @@ IF(FreeImage_INCLUDE_DIRS)
   ENDIF(EXISTS "${FreeImage_LIBRARY_DIRS}/lib")
 
   IF(WIN32)
-    FILE(GLOB FreeImage_ALL_DEBUG_LIBS   ${FreeImage_LIBRARY_DIRS}/${FreeImage_DEBUG_LIBRARY_NAME}.lib)
-    FILE(GLOB FreeImage_ALL_RELEASE_LIBS ${FreeImage_LIBRARY_DIRS}/${FreeImage_RELEASE_LIBRARY_NAME}.lib)
+    FILE(GLOB FreeImage_ALL_DEBUG_LIBS
+              ${FreeImage_LIBRARY_DIRS}/${FreeImage_DEBUG_LIBRARY_NAME}.lib
+              ${FreeImage_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/${FreeImage_DEBUG_LIBRARY_NAME}.lib)
+
+    FILE(GLOB FreeImage_ALL_RELEASE_LIBS
+              ${FreeImage_LIBRARY_DIRS}/${FreeImage_RELEASE_LIBRARY_NAME}.lib
+              ${FreeImage_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/${FreeImage_RELEASE_LIBRARY_NAME}.lib)
 
     IF(FreeImage_ALL_DEBUG_LIBS)
       LIST(GET FreeImage_ALL_DEBUG_LIBS 0 FreeImage_DEBUG_LIBRARY)
@@ -81,11 +86,18 @@ IF(FreeImage_INCLUDE_DIRS)
       SET(FreeImage_LIBRARIES ${FreeImage_RELEASE_LIBRARY})
     ENDIF(FreeImage_DEBUG_LIBRARY AND FreeImage_RELEASE_LIBRARY)
   ELSE(WIN32)
-    FILE(GLOB FreeImage_ALL_LIBS ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.so
-                                 ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.so.*
-                                 ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.dylib
-                                 ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.dylib.*
-                                 ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.a)
+    FILE(GLOB FreeImage_ALL_LIBS
+         ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.so
+         ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.so.*
+         ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.dylib
+         ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.dylib.*
+         ${FreeImage_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/lib${FreeImage_LIBRARY_NAME}*.so
+         ${FreeImage_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/lib${FreeImage_LIBRARY_NAME}*.so.*
+         ${FreeImage_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/lib${FreeImage_LIBRARY_NAME}*.dylib
+         ${FreeImage_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/lib${FreeImage_LIBRARY_NAME}*.dylib.*
+         ${FreeImage_LIBRARY_DIRS}/lib${FreeImage_LIBRARY_NAME}*.a
+         ${FreeImage_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/lib${FreeImage_LIBRARY_NAME}*.a)
+
     IF(FreeImage_ALL_LIBS)
       LIST(GET FreeImage_ALL_LIBS 0 FreeImage_LIBRARIES)
     ELSE(FreeImage_ALL_LIBS)

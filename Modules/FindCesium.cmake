@@ -35,12 +35,12 @@ IF(Cesium_INCLUDE_DIRS)
 
   FIND_LIBRARY(Cesium_DEBUG_LIBRARY
                NAMES cesium_d cesiumd
-               PATH_SUFFIXES "" Debug
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
                PATHS ${Cesium_PROJECT_DIR} ${Cesium_PROJECT_DIR}/lib NO_DEFAULT_PATH)
 
   FIND_LIBRARY(Cesium_RELEASE_LIBRARY
                NAMES cesium
-               PATH_SUFFIXES "" Release
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
                PATHS ${Cesium_PROJECT_DIR} ${Cesium_PROJECT_DIR}/lib NO_DEFAULT_PATH)
 
   SET(Cesium_LIBRARIES)

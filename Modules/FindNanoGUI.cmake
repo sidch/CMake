@@ -66,17 +66,21 @@ IF(NanoGUI_INCLUDE_DIRS)
 
   FIND_LIBRARY(NanoGUI_DEBUG_LIBRARY
                NAMES nanoguid NanoGUId
-               PATH_SUFFIXES "" Debug
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
                PATHS ${NanoGUI_LIBRARY_DIRS} ${NanoGUI_LIBRARY_DIRS}/lib NO_DEFAULT_PATH)
   IF(NOT NanoGUI_DEBUG_LIBRARY)
     FIND_LIBRARY(NanoGUI_DEBUG_LIBRARY
                  NAMES nanogui NanoGUI
-                 PATHS ${NanoGUI_LIBRARY_DIRS}/Debug ${NanoGUI_LIBRARY_DIRS}/lib/Debug NO_DEFAULT_PATH)
+                 PATHS ${NanoGUI_LIBRARY_DIRS}/Debug
+                       ${NanoGUI_LIBRARY_DIRS}/lib/Debug
+                       ${NanoGUI_LIBRARY_DIRS}/${CMAKE_LIBRARY_ARCHITECTURE}/Debug
+                       ${NanoGUI_LIBRARY_DIRS}/lib/${CMAKE_LIBRARY_ARCHITECTURE}/Debug
+                 NO_DEFAULT_PATH)
   ENDIF(NOT NanoGUI_DEBUG_LIBRARY)
 
   FIND_LIBRARY(NanoGUI_RELEASE_LIBRARY
                NAMES nanogui NanoGUI
-               PATH_SUFFIXES "" Release
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
                PATHS ${NanoGUI_LIBRARY_DIRS} ${NanoGUI_LIBRARY_DIRS}/lib NO_DEFAULT_PATH)
 
   SET(NanoGUI_LIBRARIES)

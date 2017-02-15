@@ -48,7 +48,9 @@ ELSEIF(SuperLU_LIBS_ONLY)
     ENDIF(EXISTS "${SuperLU_LIBRARY_DIRS}/lib")
 
     # Find SuperLU library
-    FIND_LIBRARY(SuperLU_LIBRARIES NAMES superlu libsuperlu SuperLU libSuperLU PATHS ${SuperLU_LIBRARY_DIRS} NO_DEFAULT_PATH)
+    FIND_LIBRARY(SuperLU_LIBRARIES NAMES superlu libsuperlu SuperLU libSuperLU
+                 PATH_SUFFIXES ${CMAKE_LIBRARY_ARCHITECTURE}
+                 PATHS ${SuperLU_LIBRARY_DIRS} NO_DEFAULT_PATH)
 
     IF(SuperLU_LIBRARIES)
       SET(SuperLU_FOUND TRUE)

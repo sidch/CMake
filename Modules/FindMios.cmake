@@ -35,12 +35,12 @@ IF(Mios_INCLUDE_DIRS)
 
   FIND_LIBRARY(Mios_DEBUG_LIBRARY
                NAMES Mios_d Miosd
-               PATH_SUFFIXES "" Debug
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
                PATHS ${Mios_LIBRARY_DIRS} ${Mios_LIBRARY_DIRS}/lib ${Mios_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
   FIND_LIBRARY(Mios_RELEASE_LIBRARY
                NAMES Mios
-               PATH_SUFFIXES "" Release
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
                PATHS ${Mios_LIBRARY_DIRS} ${Mios_LIBRARY_DIRS}/lib ${Mios_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
   SET(Mios_LIBRARIES)

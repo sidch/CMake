@@ -36,13 +36,13 @@ IF(MeruNetwork_INCLUDE_DIRS)
 
   FIND_LIBRARY(MeruNetwork_DEBUG_LIBRARY
                NAMES MeruNetwork_d MeruNetworkd
-               PATH_SUFFIXES "" Debug
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
                PATHS ${MeruNetwork_LIBRARY_DIRS} ${MeruNetwork_LIBRARY_DIRS}/lib ${MeruNetwork_LIBRARY_DIRS}/Build/lib
                NO_DEFAULT_PATH)
 
   FIND_LIBRARY(MeruNetwork_RELEASE_LIBRARY
                NAMES MeruNetwork
-               PATH_SUFFIXES "" Release
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
                PATHS ${MeruNetwork_LIBRARY_DIRS} ${MeruNetwork_LIBRARY_DIRS}/lib ${MeruNetwork_LIBRARY_DIRS}/Build/lib
                NO_DEFAULT_PATH)
 

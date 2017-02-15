@@ -38,12 +38,12 @@ IF(Mutil_INCLUDE_DIRS)
 
   FIND_LIBRARY(Mutil_DEBUG_LIBRARY
                NAMES Mutil_d Mutild
-               PATH_SUFFIXES "" Debug
+               PATH_SUFFIXES Debug ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Debug
                PATHS ${Mutil_LIBRARY_DIRS} ${Mutil_LIBRARY_DIRS}/lib ${Mutil_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
   FIND_LIBRARY(Mutil_RELEASE_LIBRARY
                NAMES Mutil
-               PATH_SUFFIXES "" Release
+               PATH_SUFFIXES Release ${CMAKE_LIBRARY_ARCHITECTURE} ${CMAKE_LIBRARY_ARCHITECTURE}/Release
                PATHS ${Mutil_LIBRARY_DIRS} ${Mutil_LIBRARY_DIRS}/lib ${Mutil_LIBRARY_DIRS}/Build/lib NO_DEFAULT_PATH)
 
   SET(Mutil_LIBRARIES)
