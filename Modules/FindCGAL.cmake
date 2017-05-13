@@ -40,6 +40,8 @@ IF(NOT CGAL_CMAKE_PATH)  # now look in system locations
             PATHS $ENV{CGAL_DIR}
                   $ENV{ProgramFiles}/CGAL
                   $ENV{SystemDrive}/CGAL
+                  /usr/lib/cmake/CGAL
+                  /usr/lib/x86_64-linux-gnu/cmake/CGAL
             PATH_SUFFIXES lib lib/CGAL lib/ms lib/ms/CGAL
                           lib64 lib64/CGAL lib64/ms lib64/ms/CGAL
             DOC ${CGAL_CMAKE_DOC})
