@@ -14,10 +14,14 @@ SET(Eigen_FOUND FALSE)
 
 # Look for the Eigen header, first in the user-specified location and then in the system locations
 SET(Eigen_INCLUDE_DOC "The directory containing the Eigen include file Eigen/Core")
-FIND_PATH(Eigen_INCLUDE_DIRS NAMES Eigen/Core eigen/Core Eigen/core eigen/core PATHS ${Eigen_ROOT} ${Eigen_ROOT}/include
+FIND_PATH(Eigen_INCLUDE_DIRS NAMES Eigen/Core eigen/Core Eigen/core eigen/core
+          PATHS ${Eigen_ROOT}
+          PATH_SUFFIXES eigen3 include include/eigen3
           DOC ${Eigen_INCLUDE_DOC} NO_DEFAULT_PATH)
 IF(NOT Eigen_INCLUDE_DIRS)  # now look in system locations
-  FIND_PATH(Eigen_INCLUDE_DIRS NAMES Eigen/Core eigen/Core Eigen/core eigen/core DOC ${Eigen_INCLUDE_DOC})
+  FIND_PATH(Eigen_INCLUDE_DIRS NAMES Eigen/Core eigen/Core Eigen/core eigen/core
+            PATH_SUFFIXES eigen3 include include/eigen3
+            DOC ${Eigen_INCLUDE_DOC})
 ENDIF(NOT Eigen_INCLUDE_DIRS)
 
 IF(Eigen_INCLUDE_DIRS)
