@@ -13,6 +13,9 @@
 # Author: Siddhartha Chaudhuri, 2009.
 #
 
+# Set the minimum required CMake version
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
 # See cmake --help-policy CMP0011 for details on this one
 IF(POLICY CMP0011)
   CMAKE_POLICY(SET CMP0011 NEW)
@@ -20,26 +23,17 @@ ENDIF(POLICY CMP0011)
 
 # See cmake --help-policy CMP0026 for details on this one
 IF(POLICY CMP0026)
-  CMAKE_POLICY(SET CMP0026 OLD)
+  CMAKE_POLICY(SET CMP0026 NEW)
 ENDIF(POLICY CMP0026)
 
 # See cmake --help-policy CMP0045 for details on this one
 IF(POLICY CMP0045)
-  CMAKE_POLICY(SET CMP0045 OLD)
+  CMAKE_POLICY(SET CMP0045 NEW)
 ENDIF(POLICY CMP0045)
 
 MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
 
   IF(APPLE)
-    IF(CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]")
-      GET_TARGET_PROPERTY(OFIN_${target}_Output ${target} DEBUG_LOCATION)
-      IF(NOT DEBUG_LOCATION)  # variable name changed in 2.6
-        GET_TARGET_PROPERTY(OFIN_${target}_Output ${target} LOCATION_DEBUG)
-      ENDIF()
-    ELSE()
-      GET_TARGET_PROPERTY(OFIN_${target}_Output ${target} LOCATION)
-    ENDIF()
-
     SET(OFIN_${target}_RPATHS )
 
     FOREACH(OFIN_${target}_Library ${libraries})
@@ -127,7 +121,7 @@ MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
                              ARGS -change
                                   ${OFIN_${target}_LibraryFilename}
                                   ${OFIN_${target}_LibraryAbsolute}
-                                  ${OFIN_${target}_Output})
+                                  $<TARGET_FILE:${target}>)
 
           # -- handle the case when the install name is baked in
           ADD_CUSTOM_COMMAND(TARGET ${target} POST_BUILD
@@ -135,7 +129,7 @@ MACRO(OSX_FIX_DYLIB_REFERENCES target libraries)
                              ARGS -change
                                   ${OFIN_${target}_LibraryInstallName}
                                   ${OFIN_${target}_LibraryAbsolute}
-                                  ${OFIN_${target}_Output})
+                                  $<TARGET_FILE:${target}>)
         ENDIF()
 
       ENDIF()
