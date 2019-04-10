@@ -14,6 +14,7 @@
 #
 # To specify an additional directory to search, set Thea_ROOT.
 # To prevent automatically searching for all dependencies, set Thea_NO_DEPENDENCIES to true.
+# To suppress searching/linking optional dependencies, set Thea_WITH_<packagename> to false.
 #
 # Author: Siddhartha Chaudhuri, 2009
 #
@@ -28,6 +29,19 @@ UNSET(Thea_CFLAGS)
 UNSET(Thea_CFLAGS CACHE)
 UNSET(Thea_LDFLAGS)
 UNSET(Thea_LDFLAGS CACHE)
+
+# Optional libraries are enabled by default
+IF(NOT DEFINED Thea_WITH_CLUTO)
+  SET(Thea_WITH_CLUTO TRUE)
+ENDIF(NOT DEFINED Thea_WITH_CLUTO)
+
+IF(NOT DEFINED Thea_WITH_Eigen3)
+  SET(Thea_WITH_Eigen3 TRUE)
+ENDIF(NOT DEFINED Thea_WITH_Eigen3)
+
+IF(NOT DEFINED Thea_WITH_CGAL)
+  SET(Thea_WITH_CGAL TRUE)
+ENDIF(NOT DEFINED Thea_WITH_CGAL)
 
 # Look for the Thea header, first in the user-specified location and then in the system locations
 SET(Thea_INCLUDE_DOC "The directory containing the Thea include file Thea/Thea.hpp")
@@ -161,7 +175,7 @@ IF(Thea_FOUND)
 ENDIF(Thea_FOUND)
 
 # Dependency: CLUTO (optional)
-IF(Thea_FOUND)
+IF(Thea_FOUND AND Thea_WITH_CLUTO)
   IF(EXISTS ${Thea_ROOT}/installed-cluto)
     SET(CLUTO_ROOT ${Thea_ROOT}/installed-cluto)
   ELSE(EXISTS ${Thea_ROOT}/installed-cluto)
@@ -171,11 +185,51 @@ IF(Thea_FOUND)
   IF(CLUTO_FOUND)
     SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CLUTO_LIBRARIES})
     SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${CLUTO_INCLUDE_DIRS})
-    SET(Thea_CFLAGS ${Thea_CFLAGS} -DTHEA_ENABLE_CLUTO)
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CLUTO")
   ELSE(CLUTO_FOUND)
     MESSAGE(STATUS "Thea: CLUTO not found")  # this is not a fatal error
   ENDIF(CLUTO_FOUND)
 ENDIF(Thea_FOUND)
+
+# Dependency: Eigen3 (optional)
+IF(Thea_FOUND AND Thea_WITH_Eigen3)
+  IF(EXISTS ${Thea_ROOT}/installed-eigen3)
+    SET(EIGEN3_ROOT ${Thea_ROOT}/installed-eigen3)
+  ELSE(EXISTS ${Thea_ROOT}/installed-eigen3)
+    SET(EIGEN3_ROOT ${Thea_ROOT})
+  ENDIF(EXISTS ${Thea_ROOT}/installed-eigen3)
+  FIND_PACKAGE(Eigen3)
+  IF(EIGEN3_FOUND)
+    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_EIGEN3")
+  ELSE(EIGEN3_FOUND)
+    MESSAGE(STATUS "Thea: Eigen3 not found")  # this is not a fatal error
+  ENDIF(EIGEN3_FOUND)
+ENDIF(Thea_FOUND)
+
+# Dependency: CGAL (optional)
+IF(Thea_FIND_CGAL AND Thea_WITH_CGAL)
+  IF(EXISTS ${Thea_ROOT}/installed-cgal)
+    SET(CGAL_ROOT ${Thea_ROOT}/installed-cgal)
+  ELSE()
+    SET(CGAL_ROOT ${Thea_ROOT})
+  ENDIF()
+  FIND_PACKAGE(CGAL)
+  IF(CGAL_FOUND)
+    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${CGAL_INCLUDE_DIRS})
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CGAL")
+    SET(Thea_DEBUG_CFLAGS ${Thea_DEBUG_CFLAGS} ${CGAL_DEBUG_CFLAGS})
+    SET(Thea_RELEASE_CFLAGS ${Thea_RELEASE_CFLAGS} ${CGAL_RELEASE_CFLAGS})
+
+    IF(CGAL_LIBRARY)
+      SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CGAL_LIBRARY})
+      SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${CGAL_LIBRARY_DIRS})
+    ENDIF()
+
+  ELSE()  # this is not a fatal error
+    MESSAGE(STATUS "CGAL not found: library will be built without CGAL-dependent components")
+  ENDIF()
+ENDIF()
 
 # Platform libs
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
