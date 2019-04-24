@@ -179,7 +179,7 @@ IF(Thea_FOUND)
   IF(Lib3ds_FOUND)
     SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${Lib3ds_LIBRARIES})
     SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${Lib3ds_INCLUDE_DIRS})
-    SET(Thea_CFLAGS ${Thea_CFLAGS} -DTHEA_LIB3DS_VERSION_MAJOR=${Lib3ds_VERSION_MAJOR})
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_LIB3DS_VERSION_MAJOR=${Lib3ds_VERSION_MAJOR}")
   ELSE(Lib3ds_FOUND)
     MESSAGE(STATUS "Thea: lib3ds not found")
     SET(Thea_FOUND FALSE)
@@ -201,31 +201,35 @@ IF(Thea_FOUND AND Thea_WITH_CLUTO)
   ELSE(CLUTO_FOUND)
     MESSAGE(STATUS "Thea: CLUTO not found")  # this is not a fatal error
   ENDIF(CLUTO_FOUND)
-ENDIF(Thea_FOUND)
+ENDIF(Thea_FOUND AND Thea_WITH_CLUTO)
 
 # Dependency: CGAL (optional)
-IF(Thea_FIND_CGAL AND Thea_WITH_CGAL)
+IF(Thea_FOUND AND Thea_WITH_CGAL)
   IF(EXISTS ${Thea_ROOT}/installed-cgal)
     SET(CGAL_ROOT ${Thea_ROOT}/installed-cgal)
-  ELSE()
+  ELSE(EXISTS ${Thea_ROOT}/installed-cgal)
     SET(CGAL_ROOT ${Thea_ROOT})
-  ENDIF()
+  ENDIF(EXISTS ${Thea_ROOT}/installed-cgal)
   FIND_PACKAGE(CGAL)
   IF(CGAL_FOUND)
     SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${CGAL_INCLUDE_DIRS})
     SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CGAL")
-    SET(Thea_DEBUG_CFLAGS ${Thea_DEBUG_CFLAGS} ${CGAL_DEBUG_CFLAGS})
-    SET(Thea_RELEASE_CFLAGS ${Thea_RELEASE_CFLAGS} ${CGAL_RELEASE_CFLAGS})
+    SET(Thea_DEBUG_CFLAGS "${Thea_DEBUG_CFLAGS} ${CGAL_DEBUG_CFLAGS}")
+    SET(Thea_RELEASE_CFLAGS "${Thea_RELEASE_CFLAGS} ${CGAL_RELEASE_CFLAGS}")
 
     IF(CGAL_LIBRARY)
       SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CGAL_LIBRARY})
       SET(Thea_LIBRARY_DIRS ${Thea_LIBRARY_DIRS} ${CGAL_LIBRARY_DIRS})
-    ENDIF()
+    ENDIF(CGAL_LIBRARY)
 
-  ELSE()  # this is not a fatal error
+    # CGAL appends the directory containing its own CMake modules to the module search path. We shouldn't need it after this
+    # point, so let's drop everything on the module path other than the first component.
+    LIST(GET CMAKE_MODULE_PATH 0 CMAKE_MODULE_PATH)
+
+  ELSE(CGAL_FOUND)  # this is not a fatal error
     MESSAGE(STATUS "CGAL not found: library will be built without CGAL-dependent components")
-  ENDIF()
-ENDIF()
+  ENDIF(CGAL_FOUND)
+ENDIF(Thea_FOUND AND Thea_WITH_CGAL)
 
 # Platform libs
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
