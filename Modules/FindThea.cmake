@@ -15,6 +15,8 @@
 # To specify an additional directory to search, set Thea_ROOT.
 # To prevent automatically searching for all dependencies, set Thea_NO_DEPENDENCIES to true.
 # To suppress searching/linking optional dependencies, set Thea_WITH_<packagename> to false.
+# To specify additional Boost components to search for (filesystem, system and thread are always included), set
+#   Thea_FIND_Boost_ADDITIONAL_COMPONENTS.
 #
 # Author: Siddhartha Chaudhuri, 2009
 #
@@ -124,7 +126,7 @@ IF(Thea_FOUND)
   ELSE(EXISTS ${Thea_ROOT}/installed-boost)
     SET(BOOST_ROOT ${Thea_ROOT})
   ENDIF(EXISTS ${Thea_ROOT}/installed-boost)
-  FIND_PACKAGE(Boost COMPONENTS filesystem thread system)
+  FIND_PACKAGE(Boost COMPONENTS filesystem system thread ${Thea_FIND_Boost_ADDITIONAL_COMPONENTS})
   IF(Boost_FOUND)
     SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${Boost_LIBRARIES})
     SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
