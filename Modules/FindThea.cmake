@@ -42,7 +42,7 @@ IF(NOT DEFINED Thea_WITH_CGAL)
 ENDIF(NOT DEFINED Thea_WITH_CGAL)
 
 # Look for the Thea header, first in the user-specified location and then in the system locations
-SET(Thea_INCLUDE_DOC "The directory containing the Thea include file Thea/Thea.hpp")
+SET(Thea_INCLUDE_DOC "The directory containing the Thea include file Thea/Common.hpp")
 FIND_PATH(Thea_INCLUDE_DIRS NAMES Thea/Common.hpp PATHS ${Thea_ROOT} ${Thea_ROOT}/include ${Thea_ROOT}/Source
           DOC ${Thea_INCLUDE_DOC} NO_DEFAULT_PATH)
 IF(NOT Thea_INCLUDE_DIRS)  # now look in system locations

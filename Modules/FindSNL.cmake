@@ -16,7 +16,7 @@ SET(SNL_FOUND FALSE)
 SET(SNL_CFLAGS )
 
 # Look for the SNL header, first in the user-specified location and then in the system locations
-SET(SNL_INCLUDE_DOC "The directory containing the SNL include file SNL/SNL.hpp")
+SET(SNL_INCLUDE_DOC "The directory containing the SNL include file SNL/Common.hpp")
 FIND_PATH(SNL_INCLUDE_DIRS NAMES SNL/Common.hpp PATHS ${SNL_ROOT} ${SNL_ROOT}/include ${SNL_ROOT}/Source
           DOC ${SNL_INCLUDE_DOC} NO_DEFAULT_PATH)
 IF(NOT SNL_INCLUDE_DIRS)  # now look in system locations
