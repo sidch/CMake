@@ -13,10 +13,7 @@
 #   Thea_LDFLAGS         Extra linker flags
 #
 # To specify an additional directory to search, set Thea_ROOT.
-# To prevent automatically searching for all dependencies, set Thea_NO_DEPENDENCIES to true.
-# To suppress searching/linking optional dependencies, set Thea_WITH_<packagename> to false.
-# To specify additional Boost components to search for (filesystem, system and thread are always included), set
-#   Thea_FIND_Boost_ADDITIONAL_COMPONENTS.
+# To suppress searching and linking specific dependencies, set Thea_WITH_<PACKAGENAME> to false.
 #
 # Author: Siddhartha Chaudhuri, 2009
 #
@@ -32,7 +29,22 @@ UNSET(Thea_CFLAGS CACHE)
 UNSET(Thea_LDFLAGS)
 UNSET(Thea_LDFLAGS CACHE)
 
-# Optional libraries are enabled by default
+# Required unless explicitly omitted, in which case the caller must find Eigen separately.
+IF(NOT DEFINED Thea_WITH_EIGEN3)
+  SET(Thea_WITH_EIGEN3 TRUE)
+ENDIF()
+
+# Any optional library is enabled by default (unless the found library was compiled without it). If it is explicitly omitted,
+# Thea will drop all support for it even if it is separately found by the caller. To work around this, the caller can add the
+# compiler definition "-DTHEA_ENABLE_<PACKAGENAME>=1".
+IF(NOT DEFINED Thea_WITH_FREEIMAGE)
+  SET(Thea_WITH_FREEIMAGE TRUE)
+ENDIF(NOT DEFINED Thea_WITH_FREEIMAGE)
+
+IF(NOT DEFINED Thea_WITH_LIB3DS)
+  SET(Thea_WITH_LIB3DS TRUE)
+ENDIF(NOT DEFINED Thea_WITH_LIB3DS)
+
 IF(NOT DEFINED Thea_WITH_CLUTO)
   SET(Thea_WITH_CLUTO TRUE)
 ENDIF(NOT DEFINED Thea_WITH_CLUTO)
@@ -102,42 +114,42 @@ IF(Thea_INCLUDE_DIRS)
       ENDIF("${Thea_LIBRARIES}" MATCHES ".dylib$" OR "${Thea_LIBRARIES}" MATCHES ".so$")
     ENDIF(WIN32)
 
-    # Read extra flags to be used to build Thea
+    # Read extra flags to be used to build Thea (key-value parsing via https://stackoverflow.com/a/17168870)
     SET(Thea_BUILD_FLAGS_FILE "${Thea_INCLUDE_DIRS}/Thea/BuildFlags.txt")
     IF(EXISTS "${Thea_BUILD_FLAGS_FILE}")
-      FILE(READ "${Thea_BUILD_FLAGS_FILE}" Thea_BUILD_FLAGS)
-      STRING(REGEX REPLACE "\n" " " Thea_BUILD_FLAGS "${Thea_BUILD_FLAGS}")
-      SET(Thea_CFLAGS "${Thea_CFLAGS} ${Thea_BUILD_FLAGS}")
+      FILE(STRINGS "${Thea_BUILD_FLAGS_FILE}" Thea_BUILD_FLAGS)
+      FOREACH(NameAndValue ${Thea_BUILD_FLAGS})
+        # Strip leading spaces
+        STRING(REGEX REPLACE "^[ ]+" "" NameAndValue ${NameAndValue})
+        # Find variable name
+        STRING(REGEX MATCH "^[^=]+" Name ${NameAndValue})
+        # Find the value
+        STRING(REPLACE "${Name}=" "" Value ${NameAndValue})
+        # Set the variable
+        SET(Thea_${Name} "${Value}")
+      ENDFOREACH(NameAndValue ${Thea_BUILD_FLAGS})
     ENDIF(EXISTS "${Thea_BUILD_FLAGS_FILE}")
 
   ENDIF(Thea_LIBRARIES)
 ENDIF(Thea_INCLUDE_DIRS)
 
-IF(NOT Thea_NO_DEPENDENCIES)
-
-# Dependency: Boost
 IF(Thea_FOUND)
-  SET(Boost_USE_MULTITHREADED    ON)
-  # SET(Boost_USE_STATIC_LIBS      ON)
-  # SET(Boost_USE_STATIC_RUNTIME  OFF)
-  INCLUDE(BoostAdditionalVersions)
-  IF(EXISTS ${Thea_ROOT}/installed-boost)
-    SET(BOOST_ROOT ${Thea_ROOT}/installed-boost)
-  ELSE(EXISTS ${Thea_ROOT}/installed-boost)
-    SET(BOOST_ROOT ${Thea_ROOT})
-  ENDIF(EXISTS ${Thea_ROOT}/installed-boost)
-  FIND_PACKAGE(Boost COMPONENTS filesystem system thread ${Thea_FIND_Boost_ADDITIONAL_COMPONENTS})
-  IF(Boost_FOUND)
-    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${Boost_LIBRARIES})
-    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-  ELSE(Boost_FOUND)
-    MESSAGE(STATUS "Thea: Boost not found")
-    SET(Thea_FOUND FALSE)
-  ENDIF(Boost_FOUND)
+  # If Thea was built in LITE mode but the WITH_<PACKAGENAME> flags are still enabled (this would probably be because of a bug,
+  # e.g. if the BuildFlags.txt file omitted them), disable them.
+  IF(Thea_LITE)
+    SET(Thea_WITH_CGAL FALSE)
+    SET(Thea_WITH_CLUTO FALSE)
+    SET(Thea_WITH_FREEIMAGE FALSE)
+    SET(Thea_WITH_LIB3DS FALSE)
+  ENDIF(Thea_LITE)
+
+  IF(Thea_EXTERN_TEMPLATES)
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_EXTERN_TEMPLATES=1")
+  ENDIF(Thea_EXTERN_TEMPLATES)
 ENDIF(Thea_FOUND)
 
-# Dependency: Eigen3
-IF(Thea_FOUND)
+# Dependency: Eigen3 (required)
+IF(Thea_FOUND AND Thea_WITH_EIGEN3)
   IF(EXISTS ${Thea_ROOT}/installed-eigen3)
     SET(EIGEN3_ROOT ${Thea_ROOT}/installed-eigen3)
   ELSE(EXISTS ${Thea_ROOT}/installed-eigen3)
@@ -152,59 +164,6 @@ IF(Thea_FOUND)
   ENDIF(EIGEN3_FOUND)
 ENDIF(Thea_FOUND)
 
-# Dependency: FreeImage
-IF(Thea_FOUND)
-  IF(EXISTS ${Thea_ROOT}/installed-freeimage)
-    SET(FreeImage_ROOT ${Thea_ROOT}/installed-freeimage)
-  ELSE(EXISTS ${Thea_ROOT}/installed-freeimage)
-    SET(FreeImage_ROOT ${Thea_ROOT})
-  ENDIF(EXISTS ${Thea_ROOT}/installed-freeimage)
-  SET(FreeImage_LANGUAGE "C++")
-  FIND_PACKAGE(FreeImage REQUIRED)
-  IF(FreeImage_FOUND)
-    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${FreeImage_LIBRARIES})
-    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${FreeImage_INCLUDE_DIRS})
-  ELSE(FreeImage_FOUND)
-    MESSAGE(STATUS "Thea: FreeImage not found")
-    SET(Thea_FOUND FALSE)
-  ENDIF(FreeImage_FOUND)
-ENDIF(Thea_FOUND)
-
-# Dependency: Lib3ds
-IF(Thea_FOUND)
-  IF(EXISTS ${Thea_ROOT}/installed-lib3ds)
-    SET(Lib3ds_ROOT ${Thea_ROOT}/installed-lib3ds)
-  ELSE(EXISTS ${Thea_ROOT}/installed-lib3ds)
-    SET(Lib3ds_ROOT ${Thea_ROOT})
-  ENDIF(EXISTS ${Thea_ROOT}/installed-lib3ds)
-  FIND_PACKAGE(Lib3ds)
-  IF(Lib3ds_FOUND)
-    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${Lib3ds_LIBRARIES})
-    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${Lib3ds_INCLUDE_DIRS})
-    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_LIB3DS_VERSION_MAJOR=${Lib3ds_VERSION_MAJOR}")
-  ELSE(Lib3ds_FOUND)
-    MESSAGE(STATUS "Thea: lib3ds not found")
-    SET(Thea_FOUND FALSE)
-  ENDIF(Lib3ds_FOUND)
-ENDIF(Thea_FOUND)
-
-# Dependency: CLUTO (optional)
-IF(Thea_FOUND AND Thea_WITH_CLUTO)
-  IF(EXISTS ${Thea_ROOT}/installed-cluto)
-    SET(CLUTO_ROOT ${Thea_ROOT}/installed-cluto)
-  ELSE(EXISTS ${Thea_ROOT}/installed-cluto)
-    SET(CLUTO_ROOT ${Thea_ROOT})
-  ENDIF(EXISTS ${Thea_ROOT}/installed-cluto)
-  FIND_PACKAGE(CLUTO)
-  IF(CLUTO_FOUND)
-    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CLUTO_LIBRARIES})
-    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${CLUTO_INCLUDE_DIRS})
-    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CLUTO")
-  ELSE(CLUTO_FOUND)
-    MESSAGE(STATUS "Thea: CLUTO not found")  # this is not a fatal error
-  ENDIF(CLUTO_FOUND)
-ENDIF(Thea_FOUND AND Thea_WITH_CLUTO)
-
 # Dependency: CGAL (optional)
 IF(Thea_FOUND AND Thea_WITH_CGAL)
   IF(EXISTS ${Thea_ROOT}/installed-cgal)
@@ -215,7 +174,7 @@ IF(Thea_FOUND AND Thea_WITH_CGAL)
   FIND_PACKAGE(CGAL)
   IF(CGAL_FOUND)
     SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${CGAL_INCLUDE_DIRS})
-    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CGAL")
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CGAL=1")
     SET(Thea_DEBUG_CFLAGS "${Thea_DEBUG_CFLAGS} ${CGAL_DEBUG_CFLAGS}")
     SET(Thea_RELEASE_CFLAGS "${Thea_RELEASE_CFLAGS} ${CGAL_RELEASE_CFLAGS}")
 
@@ -230,8 +189,73 @@ IF(Thea_FOUND AND Thea_WITH_CGAL)
 
   ELSE(CGAL_FOUND)  # this is not a fatal error
     MESSAGE(STATUS "CGAL not found: library will be built without CGAL-dependent components")
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CGAL=0")
   ENDIF(CGAL_FOUND)
+ELSE(Thea_FOUND AND Thea_WITH_CGAL)
+  SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CGAL=0")
 ENDIF(Thea_FOUND AND Thea_WITH_CGAL)
+
+# Dependency: CLUTO (optional)
+IF(Thea_FOUND AND Thea_WITH_CLUTO)
+  IF(EXISTS ${Thea_ROOT}/installed-cluto)
+    SET(CLUTO_ROOT ${Thea_ROOT}/installed-cluto)
+  ELSE(EXISTS ${Thea_ROOT}/installed-cluto)
+    SET(CLUTO_ROOT ${Thea_ROOT})
+  ENDIF(EXISTS ${Thea_ROOT}/installed-cluto)
+  FIND_PACKAGE(CLUTO)
+  IF(CLUTO_FOUND)
+    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CLUTO_LIBRARIES})
+    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${CLUTO_INCLUDE_DIRS})
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CLUTO=1")
+  ELSE(CLUTO_FOUND)
+    MESSAGE(STATUS "Thea: CLUTO not found")  # this is not a fatal error
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CLUTO=0")
+  ENDIF(CLUTO_FOUND)
+ELSE(Thea_FOUND AND Thea_WITH_CLUTO)
+  SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_CLUTO=0")
+ENDIF(Thea_FOUND AND Thea_WITH_CLUTO)
+
+# Dependency: FreeImage (optional)
+IF(Thea_FOUND AND Thea_WITH_FREEIMAGE)
+  IF(EXISTS ${Thea_ROOT}/installed-freeimage)
+    SET(FreeImage_ROOT ${Thea_ROOT}/installed-freeimage)
+  ELSE(EXISTS ${Thea_ROOT}/installed-freeimage)
+    SET(FreeImage_ROOT ${Thea_ROOT})
+  ENDIF(EXISTS ${Thea_ROOT}/installed-freeimage)
+  SET(FreeImage_LANGUAGE "C++")
+  FIND_PACKAGE(FreeImage)
+  IF(FreeImage_FOUND)
+    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${FreeImage_LIBRARIES})
+    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${FreeImage_INCLUDE_DIRS})
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_FREEIMAGE=1")
+  ELSE(FreeImage_FOUND)
+    MESSAGE(STATUS "Thea: FreeImage not found")  # this is not a fatal error
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_FREEIMAGE=0")
+  ENDIF(FreeImage_FOUND)
+ELSE(Thea_FOUND AND Thea_WITH_FREEIMAGE)
+  SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_FREEIMAGE=0")
+ENDIF(Thea_FOUND AND Thea_WITH_FREEIMAGE)
+
+# Dependency: Lib3ds (optional)
+IF(Thea_FOUND AND Thea_WITH_LIB3DS)
+  IF(EXISTS ${Thea_ROOT}/installed-lib3ds)
+    SET(Lib3ds_ROOT ${Thea_ROOT}/installed-lib3ds)
+  ELSE(EXISTS ${Thea_ROOT}/installed-lib3ds)
+    SET(Lib3ds_ROOT ${Thea_ROOT})
+  ENDIF(EXISTS ${Thea_ROOT}/installed-lib3ds)
+  FIND_PACKAGE(Lib3ds)
+  IF(Lib3ds_FOUND)
+    SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${Lib3ds_LIBRARIES})
+    SET(Thea_INCLUDE_DIRS ${Thea_INCLUDE_DIRS} ${Lib3ds_INCLUDE_DIRS})
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_LIB3DS=1")
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_LIB3DS_VERSION_MAJOR=${Lib3ds_VERSION_MAJOR}")
+  ELSE(Lib3ds_FOUND)
+    MESSAGE(STATUS "Thea: Lib3ds not found")  # this is not a fatal error
+    SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_LIB3DS=0")
+  ENDIF(Lib3ds_FOUND)
+ELSE(Thea_FOUND AND Thea_WITH_LIB3DS)
+  SET(Thea_CFLAGS "${Thea_CFLAGS} -DTHEA_ENABLE_LIB3DS=0")
+ENDIF(Thea_FOUND AND Thea_WITH_LIB3DS)
 
 # Platform libs
 FIND_PACKAGE(Threads REQUIRED)
@@ -243,10 +267,7 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 SET(Thea_LIBRARIES ${Thea_LIBRARIES} ${CMAKE_DL_LIBS})  # for loading plugins with DynLib
 
-ENDIF(NOT Thea_NO_DEPENDENCIES)
-
 # Remove duplicate entries from lists, else the same dirs and flags can repeat many times
-
 # Don't remove duplicates from Thea_LIBRARIES -- the list includes repetitions of "debug" and "optimized"
 
 IF(Thea_LIBRARY_DIRS)
