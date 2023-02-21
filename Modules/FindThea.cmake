@@ -162,7 +162,7 @@ IF(Thea_FOUND AND Thea_WITH_EIGEN3)
     MESSAGE(STATUS "Thea: Eigen3 not found")
     SET(Thea_FOUND FALSE)
   ENDIF(EIGEN3_FOUND)
-ENDIF(Thea_FOUND)
+ENDIF(Thea_FOUND AND Thea_WITH_EIGEN3)
 
 # Dependency: CGAL (optional)
 IF(Thea_FOUND AND Thea_WITH_CGAL)
